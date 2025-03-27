@@ -4,13 +4,14 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Homescreen from "./screens/Homescreen";
 import Bookingscrren from "./screens/Bookingscrren";
 import Registerscreen from "./screens/Registerscreen";
-import Loginscreen from "./screens/Loginscreen";  // ✅ Import login screen
+import Loginscreen from "./screens/Loginscreen";  
 import Landingscreen from "./screens/Landingscreen";
 import Profilescreen from "./screens/Profilescreen";
+import Adminscreen from "./screens/adminscreen";
 
 function App() {
   return (
-    <Router> {/* ✅ Move Router to wrap everything */}
+    <Router> {}
       <div className="App">
         <Navbar />
         <Routes>
@@ -20,6 +21,7 @@ function App() {
           <Route path="/login" element={<Loginscreen />} />  {}
           <Route path="/" element={<Landingscreen />} />
           <Route path="/profile" element={<Profilescreen/>}/>
+          <Route path="/admin" element={<Adminscreen/>}/>
         </Routes>
       </div>
     </Router>

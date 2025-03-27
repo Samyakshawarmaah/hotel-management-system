@@ -8,56 +8,44 @@ const { RangePicker } = DatePicker;
 
 function Homescreen() {
   const [rooms, setRooms] = useState([]);
-  const [filteredRooms, setFilteredRooms] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [fromdate, setFromDate] = useState(null);
   const [todate, setToDate] = useState(null);
   const [searchKey, setSearchKey] = useState("");
   const [type, setType] = useState("all");
-  const [duplicateRooms, setDuplicateRooms] = useState([]);
+
+  const selectedCity = localStorage.getItem("selectedCity") || "Random City"; 
+  const cityStorageKey = `storedRooms_${selectedCity}`;
 
   useEffect(() => {
     fetchRooms();
-  }, []);
+  }, [selectedCity]);
 
   async function fetchRooms() {
     try {
       setLoading(true);
+      
       const { data } = await axios.get("/api/rooms/getallrooms");
+
+      localStorage.setItem(cityStorageKey, JSON.stringify(data));
+
       setRooms(data);
-      setFilteredRooms(data);
-      setDuplicateRooms(data);
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching rooms:", error);
+    } finally {
       setLoading(false);
     }
   }
 
-  function filterRooms() {
-    let tempRooms = duplicateRooms;
-
-    if (searchKey) {
-      tempRooms = tempRooms.filter((room) =>
-        room.name.toLowerCase().includes(searchKey.toLowerCase())
-      );
-    }
-
-    if (type !== "all") {
-      tempRooms = tempRooms.filter(
-        (room) => room.type.toLowerCase() === type.toLowerCase()
-      );
-    }
-
-    setFilteredRooms(tempRooms);
-  }
-
-  useEffect(() => {
-    filterRooms();
-  }, [searchKey, type]);
+  const filteredRooms = rooms.filter((room) =>
+    room.name.toLowerCase().includes(searchKey.toLowerCase()) &&
+    (type === "all" || room.type.toLowerCase() === type.toLowerCase())
+  );
 
   return (
     <div className="container mt-5">
+      <h2 className="text-center mb-4">Available Rooms in {selectedCity}</h2>
+
       <div className="row justify-content-center">
         <div className="col-md-8 text-center bs">
           <div className="d-flex align-items-center gap-3 flex-wrap">
